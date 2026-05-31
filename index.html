@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>ميزانية حسين</title>
-  <link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3ddc84">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ميزانيتي">
@@ -12,94 +12,99 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root { --bg:#080c0a;--card:#0f1410;--border:#1a231d;--green:#3ddc84;--red:#ff5f5f;--text:#e8f0eb;--muted:#4a5e50; }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 10% 10%,rgba(61,220,132,.07) 0%,transparent 50%),radial-gradient(ellipse at 90% 90%,rgba(61,220,132,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
-  #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;position:relative;z-index:1}
-  .login-logo{font-size:56px;margin-bottom:16px}
-  .login-title{font-size:28px;font-weight:900;color:var(--green);margin-bottom:8px}
-  .login-sub{color:var(--muted);font-size:15px;margin-bottom:32px;text-align:center}
-  #app{display:none;position:relative;z-index:1;padding-bottom:90px}
-  .header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,12,10,.95);backdrop-filter:blur(10px);z-index:10}
-  .header-title{font-size:18px;font-weight:900;color:var(--green)}
-  .header-date{font-size:12px;color:var(--muted)}
-  .logout-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif}
-  .nav{display:flex;padding:10px 16px;gap:8px;border-bottom:1px solid var(--border);background:rgba(8,12,10,.95);position:sticky;top:61px;z-index:9}
-  .nav-btn{flex:1;padding:10px 4px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:18px;cursor:pointer;transition:all .2s}
-  .nav-btn.active{background:#0d1f12;border-color:var(--green);color:var(--green)}
-  .content{padding:16px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
-  .card-label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
-  .stats-row{display:flex;gap:8px}
-  .stat{flex:1;text-align:center}
-  .stat-label{color:var(--muted);font-size:11px;margin-bottom:4px}
-  .stat-value{font-size:17px;font-weight:900}
-  .green{color:var(--green)}.red{color:var(--red)}
-  .type-row{display:flex;gap:10px;margin-bottom:14px}
-  .type-btn{flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s}
-  .type-btn.exp-active{background:#1f0d0d;border-color:var(--red);color:var(--red)}
-  .type-btn.inc-active{background:#0d1f12;border-color:var(--green);color:var(--green)}
-  input,select{width:100%;padding:14px;background:#0a0f0b;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;margin-bottom:12px;font-family:'Cairo',sans-serif;direction:rtl;outline:none;transition:border-color .2s}
-  input:focus,select:focus{border-color:var(--green)}
-  input::placeholder{color:var(--muted)}
-  select option{background:#0f1410}
-  .add-btn{width:100%;padding:16px;background:linear-gradient(135deg,#166534,#14532d);border:none;border-radius:14px;color:var(--green);font-size:16px;font-weight:900;cursor:pointer;font-family:'Cairo',sans-serif;transition:opacity .2s}
-  .add-btn:disabled{opacity:.4;cursor:not-allowed}
-  .entry-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #111}
-  .entry-row:last-child{border-bottom:none}
-  .entry-icon{font-size:18px;flex-shrink:0}
-  .entry-info{flex:1}
-  .entry-note{color:#ccc;font-size:13px}
-  .entry-cat{color:var(--muted);font-size:11px}
-  .entry-meta{text-align:left}
-  .entry-amount{font-weight:800;font-size:14px}
-  .entry-time{color:var(--muted);font-size:11px}
-  .day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .day-label{color:#888;font-size:13px;font-weight:700}
-  .bar-wrap{margin-bottom:16px}
-  .bar-header{display:flex;justify-content:space-between;margin-bottom:6px}
-  .bar-track{background:#1a1a1a;border-radius:99px;height:8px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:99px;transition:width .7s ease}
-  .summary-net{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
-  .summary-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #111;font-size:13px}
-  .summary-row:last-child{border-bottom:none}
-  .cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-  .cat-chip{padding:6px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all .2s}
-  .cat-chip.selected{border-color:var(--green);color:var(--green);background:#0d1f12}
-  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a231d;border:1px solid var(--green);color:var(--text);padding:12px 24px;border-radius:14px;font-size:14px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
-  .toast.show{opacity:1}
-  .empty{text-align:center;color:var(--muted);padding:32px 0;font-size:15px}
-  .auth-tabs{display:flex;gap:8px;margin-bottom:24px;width:100%;max-width:360px}
-  .forgot-link{text-align:center;color:var(--green);font-size:13px;cursor:pointer;margin-top:8px;text-decoration:underline}
-  .settings-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
-  .settings-item:last-child{border-bottom:none}
-  .settings-label{color:var(--text);font-size:14px}
-  .settings-val{color:var(--muted);font-size:13px}
-  .budget-bar{margin-top:12px}
-  .budget-track{background:#1a1a1a;border-radius:99px;height:12px;overflow:hidden;margin-top:6px}
-  .budget-fill{height:100%;border-radius:99px;transition:width .7s ease}
+:root{--bg:#080c0a;--card:#0f1410;--border:#1a231d;--green:#3ddc84;--red:#ff5f5f;--text:#e8f0eb;--muted:#4a5e50}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 10% 10%,rgba(61,220,132,.07) 0%,transparent 50%),radial-gradient(ellipse at 90% 90%,rgba(61,220,132,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;position:relative;z-index:1}
+.login-logo{font-size:56px;margin-bottom:16px}
+.login-title{font-size:28px;font-weight:900;color:var(--green);margin-bottom:8px}
+.login-sub{color:var(--muted);font-size:15px;margin-bottom:32px;text-align:center}
+#app{display:none;position:relative;z-index:1;padding-bottom:90px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,12,10,.95);backdrop-filter:blur(10px);z-index:10}
+.header-title{font-size:18px;font-weight:900;color:var(--green)}
+.header-date{font-size:12px;color:var(--muted)}
+.logout-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Cairo',sans-serif}
+.nav{display:flex;padding:10px 16px;gap:8px;border-bottom:1px solid var(--border);background:rgba(8,12,10,.95);position:sticky;top:61px;z-index:9}
+.nav-btn{flex:1;padding:10px 4px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:18px;cursor:pointer;transition:all .2s}
+.nav-btn.active{background:#0d1f12;border-color:var(--green);color:var(--green)}
+.content{padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
+.card-label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.stats-row{display:flex;gap:8px}
+.stat{flex:1;text-align:center}
+.stat-label{color:var(--muted);font-size:11px;margin-bottom:4px}
+.stat-value{font-size:17px;font-weight:900}
+.green{color:var(--green)}.red{color:var(--red)}
+.type-row{display:flex;gap:10px;margin-bottom:14px}
+.type-btn{flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s}
+.type-btn.exp-active{background:#1f0d0d;border-color:var(--red);color:var(--red)}
+.type-btn.inc-active{background:#0d1f12;border-color:var(--green);color:var(--green)}
+input,select{width:100%;padding:14px;background:#0a0f0b;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;margin-bottom:12px;font-family:'Cairo',sans-serif;direction:rtl;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--green)}
+input::placeholder{color:var(--muted)}
+select option{background:#0f1410}
+.add-btn{width:100%;padding:16px;background:linear-gradient(135deg,#166534,#14532d);border:none;border-radius:14px;color:var(--green);font-size:16px;font-weight:900;cursor:pointer;font-family:'Cairo',sans-serif;transition:opacity .2s;margin-bottom:8px}
+.add-btn:disabled{opacity:.4;cursor:not-allowed}
+.del-btn{background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px 8px;flex-shrink:0}
+.entry-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #111}
+.entry-row:last-child{border-bottom:none}
+.entry-icon{font-size:18px;flex-shrink:0}
+.entry-info{flex:1}
+.entry-note{color:#ccc;font-size:13px}
+.entry-cat{color:var(--muted);font-size:11px}
+.entry-meta{text-align:left}
+.entry-amount{font-weight:800;font-size:14px}
+.entry-time{color:var(--muted);font-size:11px}
+.day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.day-label{color:#888;font-size:13px;font-weight:700}
+.bar-wrap{margin-bottom:16px}
+.bar-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.bar-track{background:#1a1a1a;border-radius:99px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .7s ease}
+.summary-net{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.summary-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #111;font-size:13px}
+.summary-row:last-child{border-bottom:none}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cat-chip{padding:6px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all .2s}
+.cat-chip.selected{border-color:var(--green);color:var(--green);background:#0d1f12}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a231d;border:1px solid var(--green);color:var(--text);padding:12px 24px;border-radius:14px;font-size:14px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.empty{text-align:center;color:var(--muted);padding:32px 0;font-size:15px}
+.month-history-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.month-tag{font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700}
+.danger-btn{width:100%;padding:14px;background:#1f0d0d;border:1px solid var(--red);border-radius:14px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin-bottom:8px}
+.forgot-link{text-align:center;color:var(--green);font-size:13px;cursor:pointer;margin-top:4px;text-decoration:underline}
+.settings-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.settings-item:last-child{border-bottom:none}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:998;display:flex;align-items:center;justify-content:center;padding:20px}
+.confirm-box{background:#0f1410;border:1px solid var(--border);border-radius:18px;padding:24px;width:100%;max-width:320px;text-align:center}
+.confirm-title{font-size:18px;font-weight:900;margin-bottom:8px}
+.confirm-sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.confirm-btns{display:flex;gap:10px}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-logo">💸</div>
   <div class="login-title">ميزانية حسين</div>
   <div class="login-sub">تتبع مصاريفك اليومية<br>من أي جهاز وأي وقت</div>
-  <div class="auth-tabs">
+  <div style="display:flex;gap:8px;margin-bottom:24px;width:100%;max-width:360px">
     <button class="type-btn inc-active" id="tab-login" onclick="switchTab('login')" style="flex:1;padding:10px">دخول</button>
     <button class="type-btn" id="tab-register" onclick="switchTab('register')" style="flex:1;padding:10px">حساب جديد</button>
   </div>
   <div style="width:100%;max-width:360px">
     <input type="email" id="auth-email" placeholder="الإيميل">
-    <input type="password" id="auth-password" placeholder="كلمة المرور" id="auth-password">
+    <input type="password" id="auth-password" placeholder="كلمة المرور">
     <button class="add-btn" id="auth-btn" onclick="handleAuth()">دخول</button>
     <div class="forgot-link" id="forgot-link" onclick="forgotPassword()">نسيت كلمة المرور؟</div>
     <div id="auth-msg" style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)"></div>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div class="header">
     <div>
@@ -121,8 +126,8 @@
     <div id="screen-home">
       <div class="card" id="budget-alert-card" style="display:none;border-color:var(--red)">
         <div style="color:var(--red);font-weight:700;font-size:14px" id="budget-alert-text"></div>
-        <div class="budget-bar">
-          <div class="budget-track"><div class="budget-fill" id="budget-fill-bar" style="background:var(--red)"></div></div>
+        <div style="margin-top:8px;background:#1a1a1a;border-radius:99px;height:10px;overflow:hidden">
+          <div id="budget-fill-bar" style="height:100%;border-radius:99px;background:var(--red);transition:width .7s ease"></div>
         </div>
       </div>
       <div class="card">
@@ -140,6 +145,10 @@
           <div class="stat"><div class="stat-label">مصاريف</div><div class="stat-value red" id="month-expense">0.00€</div></div>
           <div class="stat"><div class="stat-label">صافي</div><div class="stat-value" id="month-net">0.00€</div></div>
         </div>
+      </div>
+      <div class="card" id="prev-months-card" style="display:none">
+        <div class="card-label">الأشهر السابقة 📅</div>
+        <div id="prev-months-list"></div>
       </div>
       <div class="card">
         <div class="card-label">آخر إدخالات اليوم</div>
@@ -214,33 +223,43 @@
     <!-- SETTINGS -->
     <div id="screen-settings" style="display:none">
       <div class="card">
-        <div class="card-label">الإعدادات</div>
+        <div class="card-label">⚙️ الإعدادات</div>
         <div class="settings-item">
-          <span class="settings-label">💰 ميزانية شهرية</span>
-          <span class="settings-val" id="budget-display">غير محددة</span>
+          <span style="color:var(--text);font-size:14px">💰 ميزانية شهرية</span>
+          <span style="color:var(--muted);font-size:13px" id="budget-display">غير محددة</span>
         </div>
-        <input type="number" id="budget-input" placeholder="مثلاً: 500" style="margin-top:8px">
-        <button class="add-btn" onclick="saveBudget()" style="margin-bottom:12px">💾 احفظ الميزانية</button>
-        <div class="settings-item">
-          <span class="settings-label">🔑 تغيير كلمة المرور</span>
+        <input type="number" id="budget-input" placeholder="مثلاً: 500">
+        <button class="add-btn" onclick="saveBudget()">💾 احفظ الميزانية</button>
+        <div class="settings-item" style="margin-top:8px">
+          <span style="color:var(--text);font-size:14px">📧 الإيميل</span>
+          <span style="color:var(--muted);font-size:12px" id="user-email-display">-</span>
         </div>
-        <input type="email" id="reset-email" placeholder="إيميلك">
-        <button class="add-btn" onclick="sendResetEmail()" style="background:linear-gradient(135deg,#1e3a5f,#1a2f4a)">📧 أرسل رابط التغيير</button>
-        <div id="reset-msg" style="text-align:center;margin-top:10px;font-size:13px;color:var(--muted)"></div>
       </div>
       <div class="card">
-        <div class="card-label">معلومات الحساب</div>
-        <div class="settings-item">
-          <span class="settings-label">📧 الإيميل</span>
-          <span class="settings-val" id="user-email-display">-</span>
-        </div>
-        <div class="settings-item">
-          <span class="settings-label">📅 تاريخ اليوم</span>
-          <span class="settings-val" id="settings-date">-</span>
-        </div>
+        <div class="card-label">🔑 كلمة المرور</div>
+        <input type="email" id="reset-email" placeholder="إيميلك">
+        <button class="add-btn" onclick="sendResetEmail()" style="background:linear-gradient(135deg,#1e3a5f,#1a2f4a);color:#60a5fa">📧 أرسل رابط تغيير كلمة المرور</button>
+        <div id="reset-msg" style="text-align:center;margin-top:8px;font-size:13px;color:var(--muted)"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">🗑️ حذف البيانات</div>
+        <button class="danger-btn" onclick="confirmDelete('month')">🗑️ حذف كل إدخالات هذا الشهر</button>
+        <button class="danger-btn" onclick="confirmDelete('all')">⚠️ حذف كل البيانات نهائياً</button>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-overlay" style="display:none">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">تأكيد الحذف</div>
+    <div class="confirm-sub" id="confirm-sub">هل أنت متأكد؟ لا يمكن التراجع.</div>
+    <div class="confirm-btns">
+      <button class="add-btn" style="flex:1;margin-bottom:0;background:#1f0d0d;border:1px solid var(--red);color:var(--red)" onclick="executeDelete()">نعم، احذف</button>
+      <button class="add-btn" style="flex:1;margin-bottom:0;background:var(--card)" onclick="closeConfirm()">إلغاء</button>
+    </div>
   </div>
 </div>
 
@@ -252,12 +271,11 @@ const SUPABASE_KEY = 'sb_publishable_8EcLAAfvDXRE8ZR1OcXoKw_ACPDNKSP';
 const GEMINI_KEY = 'AIzaSyB420g0zX5Cl581CGBmfURC1dEtpMDubJ4';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const CATS_EXPENSE = ['🛒 سوبرماركت','🍔 أكل برا','🚌 مواصلات','💊 صيدلية','👕 ملابس','🏋️ جيم','📱 تقنية','🎮 ترفيه','💡 فواتير','🏠 إيجار','📚 تعليم','🔧 متفرقات'];
 const CATS_INCOME = ['💼 راتب','💰 عمل إضافي','🎁 هدية','📈 استثمار','🔄 تحويل','💳 متفرقات'];
-const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
-let currentUser = null, currentType = 'expense', selectedCat = '', allEntries = [], currentScreen = 'home';
+let currentUser=null, currentType='expense', selectedCat='', allEntries=[], currentScreen='home', deleteMode='';
 
 sb.auth.onAuthStateChange((event, session) => {
   if (session?.user) { currentUser = session.user; showApp(); }
@@ -267,10 +285,10 @@ sb.auth.onAuthStateChange((event, session) => {
 let authMode = 'login';
 function switchTab(mode) {
   authMode = mode;
-  document.getElementById('tab-login').className = 'type-btn ' + (mode === 'login' ? 'inc-active' : '');
-  document.getElementById('tab-register').className = 'type-btn ' + (mode === 'register' ? 'inc-active' : '');
-  document.getElementById('auth-btn').textContent = mode === 'login' ? 'دخول' : 'إنشاء حساب';
-  document.getElementById('forgot-link').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('tab-login').className = 'type-btn '+(mode==='login'?'inc-active':'');
+  document.getElementById('tab-register').className = 'type-btn '+(mode==='register'?'inc-active':'');
+  document.getElementById('auth-btn').textContent = mode==='login'?'دخول':'إنشاء حساب';
+  document.getElementById('forgot-link').style.display = mode==='login'?'block':'none';
   document.getElementById('auth-msg').textContent = '';
 }
 
@@ -280,60 +298,59 @@ async function handleAuth() {
   const msg = document.getElementById('auth-msg');
   const btn = document.getElementById('auth-btn');
   if (!email || !password) { msg.textContent = '⚠️ حط الإيميل وكلمة المرور'; return; }
-  btn.disabled = true; btn.textContent = 'جاري...';
-  if (authMode === 'login') {
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) { msg.style.color = 'var(--red)'; msg.textContent = '❌ إيميل أو كلمة مرور غلط'; }
+  btn.disabled=true; btn.textContent='جاري...';
+  if (authMode==='login') {
+    const {error} = await sb.auth.signInWithPassword({email,password});
+    if (error) { msg.style.color='var(--red)'; msg.textContent='❌ إيميل أو كلمة مرور غلط'; }
   } else {
-    const { error } = await sb.auth.signUp({ email, password });
-    if (error) { msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + error.message; }
-    else { msg.style.color = 'var(--green)'; msg.textContent = '✅ راجع إيميلك وأكد حسابك!'; }
+    const {error} = await sb.auth.signUp({email,password});
+    if (error) { msg.style.color='var(--red)'; msg.textContent='❌ '+error.message; }
+    else { msg.style.color='var(--green)'; msg.textContent='✅ راجع إيميلك وأكد حسابك!'; }
   }
-  btn.disabled = false; btn.textContent = authMode === 'login' ? 'دخول' : 'إنشاء حساب';
+  btn.disabled=false; btn.textContent=authMode==='login'?'دخول':'إنشاء حساب';
 }
 
 async function forgotPassword() {
   const email = document.getElementById('auth-email').value.trim();
   const msg = document.getElementById('auth-msg');
-  if (!email) { msg.style.color = 'var(--red)'; msg.textContent = '⚠️ حط إيميلك أولاً'; return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email);
-  if (error) { msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + error.message; }
-  else { msg.style.color = 'var(--green)'; msg.textContent = '✅ راجع إيميلك — وصلك رابط التغيير!'; }
+  if (!email) { msg.style.color='var(--red)'; msg.textContent='⚠️ حط إيميلك أولاً'; return; }
+  const {error} = await sb.auth.resetPasswordForEmail(email);
+  if (error) { msg.style.color='var(--red)'; msg.textContent='❌ '+error.message; }
+  else { msg.style.color='var(--green)'; msg.textContent='✅ راجع إيميلك — وصلك رابط التغيير!'; }
 }
 
 async function sendResetEmail() {
   const email = document.getElementById('reset-email').value.trim();
   const msg = document.getElementById('reset-msg');
-  if (!email) { msg.style.color = 'var(--red)'; msg.textContent = '⚠️ حط الإيميل'; return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email);
-  if (error) { msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + error.message; }
-  else { msg.style.color = 'var(--green)'; msg.textContent = '✅ راجع إيميلك!'; }
+  if (!email) { msg.style.color='var(--red)'; msg.textContent='⚠️ حط الإيميل'; return; }
+  const {error} = await sb.auth.resetPasswordForEmail(email);
+  if (error) { msg.style.color='var(--red)'; msg.textContent='❌ '+error.message; }
+  else { msg.style.color='var(--green)'; msg.textContent='✅ راجع إيميلك!'; }
 }
 
 async function signOut() { await sb.auth.signOut(); showLogin(); }
 
 function showLogin() {
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
 }
 
 function showApp() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
   const now = new Date();
   document.getElementById('header-date').textContent = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
   document.getElementById('month-label-home').textContent = MONTHS[now.getMonth()];
   document.getElementById('summary-month-label').textContent = `ملخص ${MONTHS[now.getMonth()]}`;
-  document.getElementById('settings-date').textContent = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
-  if (currentUser) document.getElementById('user-email-display').textContent = currentUser.email;
-  const savedBudget = localStorage.getItem('monthly_budget');
-  if (savedBudget) { document.getElementById('budget-display').textContent = `${savedBudget}€`; document.getElementById('budget-input').value = savedBudget; }
-  loadEntries(); renderCats();
+  if (currentUser) { document.getElementById('user-email-display').textContent = currentUser.email; document.getElementById('reset-email').value = currentUser.email; }
+  const saved = localStorage.getItem('monthly_budget');
+  if (saved) { document.getElementById('budget-display').textContent = `${saved}€`; document.getElementById('budget-input').value = saved; }
+  loadEntries(); loadPrevMonths(); renderCats();
 }
 
 function saveBudget() {
   const val = document.getElementById('budget-input').value;
-  if (!val || val <= 0) { showToast('⚠️ حط رقم صحيح'); return; }
+  if (!val || val<=0) { showToast('⚠️ حط رقم صحيح'); return; }
   localStorage.setItem('monthly_budget', val);
   document.getElementById('budget-display').textContent = `${val}€`;
   showToast('✅ تم حفظ الميزانية!');
@@ -344,121 +361,173 @@ async function loadEntries() {
   if (!currentUser) return;
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
-  const { data, error } = await sb.from('entries').select('*').eq('user_id', currentUser.id).gte('created_at', start).lte('created_at', end).order('created_at', { ascending: false });
+  const end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23, 59, 59).toISOString();
+  const {data, error} = await sb.from('entries').select('*').eq('user_id', currentUser.id).gte('created_at', start).lte('created_at', end).order('created_at', {ascending:false});
   if (error) { showToast('❌ خطأ في تحميل البيانات'); return; }
   allEntries = data || [];
   renderAll();
 }
 
-function renderAll() { renderHome(); if (currentScreen === 'history') renderHistory(); if (currentScreen === 'summary') renderSummary(); }
+async function loadPrevMonths() {
+  if (!currentUser) return;
+  const now = new Date();
+  const start = new Date(now.getFullYear()-1, now.getMonth()+1, 1).toISOString();
+  const end = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
+  const {data} = await sb.from('entries').select('*').eq('user_id', currentUser.id).gte('created_at', start).lte('created_at', end);
+  if (!data || data.length === 0) return;
+  const grouped = {};
+  data.forEach(e => {
+    const d = new Date(e.created_at);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(e);
+  });
+  const keys = Object.keys(grouped).sort((a,b) => b.localeCompare(a)).slice(0,6);
+  if (keys.length === 0) return;
+  const list = document.getElementById('prev-months-list');
+  list.innerHTML = keys.map(key => {
+    const entries = grouped[key];
+    const inc = entries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+    const exp = entries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+    const saved = inc - exp;
+    const [yr, mo] = key.split('-');
+    const monthName = MONTHS[parseInt(mo)-1];
+    return `<div class="month-history-card">
+      <div class="month-tag">${monthName} ${yr}</div>
+      <div style="display:flex;gap:12px;font-size:13px">
+        <span class="green">+${inc.toFixed(0)}€ دخل</span>
+        <span class="red">-${exp.toFixed(0)}€ مصاريف</span>
+        <span style="color:${saved>=0?'var(--green)':'var(--red)'}">وفّرت: ${saved>=0?'+':''}${saved.toFixed(0)}€</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('prev-months-card').style.display = 'block';
+}
+
+function renderAll() { renderHome(); if (currentScreen==='history') renderHistory(); if (currentScreen==='summary') renderSummary(); }
 
 function renderHome() {
   const today = new Date().toISOString().split('T')[0];
-  const todayEntries = allEntries.filter(e => e.created_at.startsWith(today));
-  const todayInc = todayEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-  const todayExp = todayEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-  const todayNet = todayInc - todayExp;
-  const monthInc = allEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-  const monthExp = allEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-  const monthNet = monthInc - monthExp;
-  document.getElementById('today-income').textContent = `+${todayInc.toFixed(2)}€`;
-  document.getElementById('today-expense').textContent = `-${todayExp.toFixed(2)}€`;
-  const netEl = document.getElementById('today-net');
-  netEl.textContent = `${todayNet >= 0 ? '+' : ''}${todayNet.toFixed(2)}€`;
-  netEl.className = 'stat-value ' + (todayNet >= 0 ? 'green' : 'red');
-  document.getElementById('month-income').textContent = `+${monthInc.toFixed(2)}€`;
-  document.getElementById('month-expense').textContent = `-${monthExp.toFixed(2)}€`;
-  const mnetEl = document.getElementById('month-net');
-  mnetEl.textContent = `${monthNet >= 0 ? '+' : ''}${monthNet.toFixed(2)}€`;
-  mnetEl.className = 'stat-value ' + (monthNet >= 0 ? 'green' : 'red');
+  const todayE = allEntries.filter(e=>e.created_at.startsWith(today));
+  const tInc = todayE.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const tExp = todayE.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const tNet = tInc - tExp;
+  const mInc = allEntries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const mExp = allEntries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const mNet = mInc - mExp;
+  document.getElementById('today-income').textContent = `+${tInc.toFixed(2)}€`;
+  document.getElementById('today-expense').textContent = `-${tExp.toFixed(2)}€`;
+  const tn = document.getElementById('today-net');
+  tn.textContent = `${tNet>=0?'+':''}${tNet.toFixed(2)}€`;
+  tn.className = 'stat-value '+(tNet>=0?'green':'red');
+  document.getElementById('month-income').textContent = `+${mInc.toFixed(2)}€`;
+  document.getElementById('month-expense').textContent = `-${mExp.toFixed(2)}€`;
+  const mn = document.getElementById('month-net');
+  mn.textContent = `${mNet>=0?'+':''}${mNet.toFixed(2)}€`;
+  mn.className = 'stat-value '+(mNet>=0?'green':'red');
   const list = document.getElementById('today-entries-list');
-  list.innerHTML = todayEntries.length === 0 ? '<div class="empty">ما في إدخالات اليوم بعد</div>' : todayEntries.slice(0, 5).map(e => entryHTML(e)).join('');
+  list.innerHTML = todayE.length===0 ? '<div class="empty">ما في إدخالات اليوم بعد</div>' : todayE.slice(0,5).map(e=>entryHTML(e,false)).join('');
   const budget = parseFloat(localStorage.getItem('monthly_budget'));
   const alertCard = document.getElementById('budget-alert-card');
-  if (budget > 0) {
-    const pct = (monthExp / budget) * 100;
-    document.getElementById('budget-fill-bar').style.width = `${Math.min(pct, 100)}%`;
-    if (pct >= 80) {
-      alertCard.style.display = 'block';
-      document.getElementById('budget-alert-text').textContent = pct >= 100 ? `🚨 تجاوزت ميزانيتك! صرفت ${monthExp.toFixed(0)}€ من ${budget}€` : `⚠️ وصلت ${pct.toFixed(0)}% من ميزانيتك الشهرية`;
-    } else { alertCard.style.display = 'none'; }
-  } else { alertCard.style.display = 'none'; }
+  if (budget>0) {
+    const pct = (mExp/budget)*100;
+    document.getElementById('budget-fill-bar').style.width = `${Math.min(pct,100)}%`;
+    if (pct>=80) { alertCard.style.display='block'; document.getElementById('budget-alert-text').textContent = pct>=100 ? `🚨 تجاوزت ميزانيتك! صرفت ${mExp.toFixed(0)}€ من ${budget}€` : `⚠️ وصلت ${pct.toFixed(0)}% من ميزانيتك الشهرية`; }
+    else alertCard.style.display='none';
+  } else alertCard.style.display='none';
 }
 
-function entryHTML(e) {
-  const t = new Date(e.created_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-  return `<div class="entry-row"><div class="entry-icon">${e.type === 'income' ? '💰' : '💸'}</div><div class="entry-info"><div class="entry-note">${e.note || (e.type === 'income' ? 'دخل' : 'مصروف')}</div>${e.category ? `<div class="entry-cat">${e.category}</div>` : ''}</div><div class="entry-meta"><div class="entry-amount ${e.type === 'income' ? 'green' : 'red'}">${e.type === 'income' ? '+' : '-'}${parseFloat(e.amount).toFixed(2)}€</div><div class="entry-time">${t}</div></div></div>`;
+function entryHTML(e, showDelete=true) {
+  const t = new Date(e.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  return `<div class="entry-row">
+    <div class="entry-icon">${e.type==='income'?'💰':'💸'}</div>
+    <div class="entry-info">
+      <div class="entry-note">${e.note||(e.type==='income'?'دخل':'مصروف')}</div>
+      ${e.category?`<div class="entry-cat">${e.category}</div>`:''}
+    </div>
+    <div class="entry-meta">
+      <div class="entry-amount ${e.type==='income'?'green':'red'}">${e.type==='income'?'+':'-'}${parseFloat(e.amount).toFixed(2)}€</div>
+      <div class="entry-time">${t}</div>
+    </div>
+    ${showDelete?`<button class="del-btn" onclick="deleteEntry('${e.id}')">🗑️</button>`:''}
+  </div>`;
+}
+
+async function deleteEntry(id) {
+  const {error} = await sb.from('entries').delete().eq('id', id);
+  if (error) { showToast('❌ خطأ في الحذف'); return; }
+  showToast('✅ تم الحذف');
+  await loadEntries();
 }
 
 function renderHistory() {
   const grouped = {};
-  allEntries.forEach(e => { const day = e.created_at.split('T')[0]; if (!grouped[day]) grouped[day] = []; grouped[day].push(e); });
-  const days = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+  allEntries.forEach(e => { const day=e.created_at.split('T')[0]; if (!grouped[day]) grouped[day]=[]; grouped[day].push(e); });
+  const days = Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
   const list = document.getElementById('history-list');
-  if (days.length === 0) { list.innerHTML = '<div class="empty">ما في إدخالات هالشهر</div>'; return; }
+  if (days.length===0) { list.innerHTML='<div class="empty">ما في إدخالات هالشهر</div>'; return; }
   list.innerHTML = days.map(day => {
     const entries = grouped[day];
-    const inc = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-    const exp = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    const net = inc - exp;
+    const inc = entries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+    const exp = entries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+    const net = inc-exp;
     const d = new Date(day);
-    const label = d.toLocaleDateString('ar-SA', { weekday: 'short', day: 'numeric', month: 'short' });
-    return `<div class="card"><div class="day-header"><span class="day-label">${label}</span><span style="font-weight:800;font-size:13px;color:${net >= 0 ? 'var(--green)' : 'var(--red)'}">${net >= 0 ? '+' : ''}${net.toFixed(2)}€</span></div>${entries.map(e => entryHTML(e)).join('')}</div>`;
+    const label = d.toLocaleDateString('ar-SA',{weekday:'short',day:'numeric',month:'short'});
+    return `<div class="card"><div class="day-header"><span class="day-label">${label}</span><span style="font-weight:800;font-size:13px;color:${net>=0?'var(--green)':'var(--red)'}">${net>=0?'+':''}${net.toFixed(2)}€</span></div>${entries.map(e=>entryHTML(e,true)).join('')}</div>`;
   }).join('');
 }
 
 function renderSummary() {
-  const inc = allEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-  const exp = allEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-  const net = inc - exp;
-  const max = Math.max(inc, exp, 1);
+  const inc = allEntries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const exp = allEntries.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const net = inc-exp;
+  const max = Math.max(inc,exp,1);
   document.getElementById('sum-income').textContent = `${inc.toFixed(2)}€`;
   document.getElementById('sum-expense').textContent = `${exp.toFixed(2)}€`;
   const netEl = document.getElementById('sum-net');
-  netEl.textContent = `${net >= 0 ? '+' : ''}${net.toFixed(2)}€`;
-  netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
-  document.getElementById('bar-income').style.width = `${(inc / max) * 100}%`;
-  document.getElementById('bar-expense').style.width = `${(exp / max) * 100}%`;
-  const days = new Set(allEntries.map(e => e.created_at.split('T')[0])).size;
-  const maxExp = allEntries.filter(e => e.type === 'expense').reduce((m, e) => Math.max(m, e.amount), 0);
+  netEl.textContent = `${net>=0?'+':''}${net.toFixed(2)}€`;
+  netEl.style.color = net>=0?'var(--green)':'var(--red)';
+  document.getElementById('bar-income').style.width = `${(inc/max)*100}%`;
+  document.getElementById('bar-expense').style.width = `${(exp/max)*100}%`;
+  const days = new Set(allEntries.map(e=>e.created_at.split('T')[0])).size;
+  const maxExp = allEntries.filter(e=>e.type==='expense').reduce((m,e)=>Math.max(m,e.amount),0);
   document.getElementById('stat-days').textContent = days;
-  document.getElementById('stat-avg-exp').textContent = days ? `${(exp / days).toFixed(2)}€` : '0€';
-  document.getElementById('stat-avg-inc').textContent = days ? `${(inc / days).toFixed(2)}€` : '0€';
+  document.getElementById('stat-avg-exp').textContent = days?`${(exp/days).toFixed(2)}€`:'0€';
+  document.getElementById('stat-avg-inc').textContent = days?`${(inc/days).toFixed(2)}€`:'0€';
   document.getElementById('stat-max-exp').textContent = `${maxExp.toFixed(2)}€`;
   const catTotals = {};
-  allEntries.filter(e => e.type === 'expense' && e.category).forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + e.amount; });
-  const sorted = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
-  document.getElementById('cat-summary-list').innerHTML = sorted.length === 0 ? '<div class="empty" style="padding:16px 0">ما في بيانات</div>' : sorted.map(([cat, val]) => `<div class="summary-row"><span style="color:#ccc">${cat}</span><span class="red" style="font-weight:800">${val.toFixed(2)}€</span></div>`).join('');
+  allEntries.filter(e=>e.type==='expense'&&e.category).forEach(e=>{catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});
+  const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('cat-summary-list').innerHTML = sorted.length===0 ? '<div class="empty" style="padding:16px 0">ما في بيانات</div>' : sorted.map(([cat,val])=>`<div class="summary-row"><span style="color:#ccc">${cat}</span><span class="red" style="font-weight:800">${val.toFixed(2)}€</span></div>`).join('');
 }
 
 function setType(type) {
-  currentType = type; selectedCat = '';
-  document.getElementById('btn-expense').className = 'type-btn' + (type === 'expense' ? ' exp-active' : '');
-  document.getElementById('btn-income').className = 'type-btn' + (type === 'income' ? ' inc-active' : '');
+  currentType=type; selectedCat='';
+  document.getElementById('btn-expense').className='type-btn'+(type==='expense'?' exp-active':'');
+  document.getElementById('btn-income').className='type-btn'+(type==='income'?' inc-active':'');
   renderCats();
 }
 
 function renderCats() {
-  const cats = currentType === 'expense' ? CATS_EXPENSE : CATS_INCOME;
-  document.getElementById('cats-container').innerHTML = cats.map(c => `<button class="cat-chip ${selectedCat === c ? 'selected' : ''}" onclick="selectCat('${c}')">${c}</button>`).join('');
+  const cats = currentType==='expense'?CATS_EXPENSE:CATS_INCOME;
+  document.getElementById('cats-container').innerHTML = cats.map(c=>`<button class="cat-chip ${selectedCat===c?'selected':''}" onclick="selectCat('${c}')">${c}</button>`).join('');
 }
 
-function selectCat(cat) { selectedCat = selectedCat === cat ? '' : cat; renderCats(); }
+function selectCat(cat) { selectedCat=selectedCat===cat?'':cat; renderCats(); }
 
 async function addEntry() {
   const amount = parseFloat(document.getElementById('amount-input').value);
   const note = document.getElementById('note-input').value.trim();
-  if (!amount || amount <= 0) { showToast('⚠️ حط مبلغ صحيح'); return; }
+  if (!amount||amount<=0) { showToast('⚠️ حط مبلغ صحيح'); return; }
   const btn = document.getElementById('add-btn');
-  btn.disabled = true; btn.textContent = 'جاري الحفظ...';
-  const { error } = await sb.from('entries').insert({ user_id: currentUser.id, type: currentType, amount, note: note || null, category: selectedCat || null });
-  btn.disabled = false; btn.textContent = '➕ أضف';
-  if (error) { showToast('❌ صار خطأ: ' + error.message); return; }
-  document.getElementById('amount-input').value = '';
-  document.getElementById('note-input').value = '';
-  selectedCat = ''; renderCats();
-  showToast(currentType === 'income' ? '✅ دخل مضاف!' : '✅ مصروف مضاف!');
+  btn.disabled=true; btn.textContent='جاري الحفظ...';
+  const {error} = await sb.from('entries').insert({user_id:currentUser.id,type:currentType,amount,note:note||null,category:selectedCat||null});
+  btn.disabled=false; btn.textContent='➕ أضف';
+  if (error) { showToast('❌ صار خطأ: '+error.message); return; }
+  document.getElementById('amount-input').value='';
+  document.getElementById('note-input').value='';
+  selectedCat=''; renderCats();
+  showToast(currentType==='income'?'✅ دخل مضاف!':'✅ مصروف مضاف!');
   await loadEntries(); showScreen('home');
 }
 
@@ -468,39 +537,64 @@ async function scanReceipt(input) {
   reader.onload = async (e) => {
     const base64 = e.target.result.split(',')[1];
     document.getElementById('scan-img').src = e.target.result;
-    document.getElementById('scan-result').style.display = 'block';
-    document.getElementById('scan-status').textContent = 'جاري التحليل... 🔍';
+    document.getElementById('scan-result').style.display='block';
+    document.getElementById('scan-status').textContent='جاري التحليل... 🔍';
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `استخرج من هاي الفاتورة:\nAMOUNT: [المبلغ الإجمالي رقم فقط]\nNOTE: [اسم المحل أو وصف]` }, { inline_data: { mime_type: file.type, data: base64 } }] }] })
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:`استخرج من هاي الفاتورة:\nAMOUNT: [المبلغ الإجمالي رقم فقط]\nNOTE: [اسم المحل]`},{inline_data:{mime_type:file.type,data:base64}}]}]})
       });
       const data = await res.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const amountMatch = text.match(/AMOUNT:\s*([\d.,]+)/);
-      const noteMatch = text.match(/NOTE:\s*(.+)/);
-      if (amountMatch) { document.getElementById('amount-input').value = parseFloat(amountMatch[1].replace(',', '.')).toFixed(2); document.getElementById('scan-status').textContent = '✅ تم استخراج المبلغ!'; document.getElementById('scan-status').style.color = 'var(--green)'; }
-      if (noteMatch) document.getElementById('note-input').value = noteMatch[1].trim();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+      const am = text.match(/AMOUNT:\s*([\d.,]+)/);
+      const no = text.match(/NOTE:\s*(.+)/);
+      if (am) { document.getElementById('amount-input').value=parseFloat(am[1].replace(',','.')).toFixed(2); document.getElementById('scan-status').textContent='✅ تم استخراج المبلغ!'; document.getElementById('scan-status').style.color='var(--green)'; }
+      if (no) document.getElementById('note-input').value=no[1].trim();
       setType('expense'); showToast('✅ تم قراءة الفاتورة!');
-    } catch { document.getElementById('scan-status').textContent = '❌ حط المبلغ يدوياً'; document.getElementById('scan-status').style.color = 'var(--red)'; }
+    } catch { document.getElementById('scan-status').textContent='❌ حط المبلغ يدوياً'; document.getElementById('scan-status').style.color='var(--red)'; }
   };
   reader.readAsDataURL(file);
 }
 
+function confirmDelete(mode) {
+  deleteMode = mode;
+  document.getElementById('confirm-title').textContent = mode==='month'?'حذف إدخالات الشهر':'حذف كل البيانات';
+  document.getElementById('confirm-sub').textContent = mode==='month'?'رح تحذف كل إدخالات الشهر الحالي. لا يمكن التراجع!':'رح تحذف كل بياناتك نهائياً. لا يمكن التراجع!';
+  document.getElementById('confirm-overlay').style.display='flex';
+}
+
+function closeConfirm() { document.getElementById('confirm-overlay').style.display='none'; }
+
+async function executeDelete() {
+  closeConfirm();
+  if (!currentUser) return;
+  let query = sb.from('entries').delete().eq('user_id', currentUser.id);
+  if (deleteMode==='month') {
+    const now = new Date();
+    const start = new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+    const end = new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59).toISOString();
+    query = sb.from('entries').delete().eq('user_id',currentUser.id).gte('created_at',start).lte('created_at',end);
+  }
+  const {error} = await query;
+  if (error) { showToast('❌ خطأ في الحذف'); return; }
+  showToast('✅ تم الحذف بنجاح');
+  await loadEntries(); await loadPrevMonths();
+}
+
 function showScreen(name) {
-  ['home','add','history','summary','settings'].forEach(s => {
-    document.getElementById(`screen-${s}`).style.display = s === name ? 'block' : 'none';
-    document.getElementById(`nav-${s}`).className = 'nav-btn' + (s === name ? ' active' : '');
+  ['home','add','history','summary','settings'].forEach(s=>{
+    document.getElementById(`screen-${s}`).style.display=s===name?'block':'none';
+    document.getElementById(`nav-${s}`).className='nav-btn'+(s===name?' active':'');
   });
-  currentScreen = name;
-  if (name === 'history') renderHistory();
-  if (name === 'summary') renderSummary();
+  currentScreen=name;
+  if (name==='history') renderHistory();
+  if (name==='summary') renderSummary();
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 </script>
 </body>
